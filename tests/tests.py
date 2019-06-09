@@ -32,7 +32,11 @@ class TestMinifiedOutput(unittest.TestCase):
     
     def test_variable_replacement(self):
         self.assertRegex(psmin.main(["psminifier.py"], file='$a = "hello there!";\n$b = "hi";\n$a="hey";'), '^(\$[a-zA-Z][a-zA-Z0-9]*)="hello there!";(\$[a-zA-Z][a-zA-Z0-9]*)="hi";\\1="hey";$')
-    
+        self.assertRegex(psmin.main(["psminifier.py"], file='$a1 = "hello there!";\n$b = "hi";\n$a1="hey";'), '^(\$[a-zA-Z][a-zA-Z0-9]*)="hello there!";(\$[a-zA-Z][a-zA-Z0-9]*)="hi";\\1="hey";$')
+        self.assertRegex(psmin.main(["psminifier.py"], file='$a1A = "hello there!";\n$b = "hi";\n$a1A="hey";'), '^(\$[a-zA-Z][a-zA-Z0-9]*)="hello there!";(\$[a-zA-Z][a-zA-Z0-9]*)="hi";\\1="hey";$')
+        self.assertNotRegex(psmin.main(["psminifier.py"], file='$1a = "hello there!";\n$b2 = "hi";\n$1a="hey";'), '^(\$[a-zA-Z][a-zA-Z0-9]*)="hello there!";(\$[a-zA-Z][a-zA-Z0-9]*)="hi";\\1="hey";$')
+        
+
     def test_string_integrity(self):
         self.assertRegex(psmin.main(["psminifier.py"], file='$a = "hello there!"'), '^\$[a-z]="hello there!"$')
 
