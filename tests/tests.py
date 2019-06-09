@@ -49,14 +49,14 @@ class TestMinifiedOutput(unittest.TestCase):
 
     def test_input_output(self):
         # Test stdin and stdout
-        proc = sp.Popen("psminifier", stdout=sp.PIPE, stdin=sp.PIPE)
+        proc = sp.Popen(["python3", "ps_minifier/psminifier.py"], stdout=sp.PIPE, stdin=sp.PIPE)
         resp = (proc.communicate(input="$a = 2".encode()))[0].decode()
         self.assertRegex(resp, "^==RESULT==[\r\n]+\$[a-z]=2[\r\n]*$")
 
         # Test file input and file output
         with open("test_ps.txt", "w") as f:
             f.write("$a = 1;\n$a = $a * 2;")
-        proc = sp.Popen(["psminifier", "-f", "test_ps.txt", "-o", "test_ps_out.txt"], stdout=sp.PIPE)
+        proc = sp.Popen(["python3", "ps_minifier/psminifier.py", "-f", "test_ps.txt", "-o", "test_ps_out.txt"], stdout=sp.PIPE)
         proc.stdout.read()
         with open("test_ps_out.txt", "r") as f:
             self.assertRegex(f.read(), "^(\$[a-z])=1;\\1=\\1\*2;[\r\n]*$")
