@@ -56,12 +56,14 @@ class TestMinifiedOutput(unittest.TestCase):
         # Test file input and file output
         with open("test_ps.txt", "w") as f:
             f.write("$a = 1;\n$a = $a * 2;")
-        proc = sp.Popen(["python3", "ps_minifier/psminifier.py", "-f", "test_ps.txt", "-o", "test_ps_out.txt"], stdout=sp.PIPE)
-        proc.stdout.read()
+        psmin.main(["psminifier.py", "-f", "test_ps.txt", "-o", "test_ps_out.txt"])
         with open("test_ps_out.txt", "r") as f:
             self.assertRegex(f.read(), "^(\$[a-z])=1;\\1=\\1\*2;[\r\n]*$")
         os.remove("test_ps_out.txt")
         os.remove("test_ps.txt")
+    
+    def test_maths_symbols(self):
+        self.assertEqual(psmin.main(["psminifier.py"], file="Get-Command *-Service;"), "Get-Command *-Service;")
 
 
 if __name__ == '__main__':
