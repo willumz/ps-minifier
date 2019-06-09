@@ -1,3 +1,4 @@
+[![PyPI](https://img.shields.io/pypi/v/ps-minifier.svg)](https://pypi.org/project/ps-minifier)
 [![CircleCI](https://circleci.com/gh/Willumz/ps-minifier.svg?style=shield)](https://circleci.com/gh/Willumz/ps-minifier)
 [![codecov](https://codecov.io/gh/Willumz/ps-minifier/branch/master/graph/badge.svg)](https://codecov.io/gh/Willumz/ps-minifier)
 

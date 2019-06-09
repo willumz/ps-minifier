@@ -12,7 +12,8 @@ setuptools.setup(
     url = "https://github.com/Willumz/ps-minifier",
     packages = setuptools.find_packages(),
     classifiers = [
-        "Programming Language :: Python :: 3"
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License"
     ],
     entry_points = {
         'console_scripts': ['psminifier=ps_minifier.psminifier:main']

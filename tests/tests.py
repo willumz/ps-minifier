@@ -30,6 +30,9 @@ class TestMinifiedOutput(unittest.TestCase):
         self.assertEqual(psmin.variables[psmin.var_count], psmin.getVar())
         self.assertRegex(psmin.getVar(), "^[a-zA-Z][a-zA-Z0-9]*$")
     
+    def test_variable_replacement(self):
+        self.assertRegex(psmin.main(["psminifier.py"], file='$a = "hello there!";\n$b = "hi";\n$a="hey";'), '^(\$[a-zA-Z][a-zA-Z0-9]*)="hello there!";(\$[a-zA-Z][a-zA-Z0-9]*)="hi";\\1="hey";$')
+    
     def test_string_integrity(self):
         self.assertRegex(psmin.main(["psminifier.py"], file='$a = "hello there!"'), '^\$[a-z]="hello there!"$')
 
