@@ -1,6 +1,6 @@
-version: 2
+version: 2.1
 orbs:
-  codecov: codecov/codecov@1.0.2
+  codecov: codecov/codecov@1.0.5
 jobs:
   build:
     docker:
@@ -13,11 +13,9 @@ jobs:
           command: |
             $HOME/.local/bin/coverage run -m unittest tests/tests.py
             $HOME/.local/bin/coverage report
-            $HOME/.local/bin/coverage html
-      - store_artifacts:
-          path: htmlcov
+            $HOME/.local/bin/coverage xml
       - codecov/upload:
-          file: htmlcov
+          file: coverage.xml
 workflows:
   version: 2
   workflow:

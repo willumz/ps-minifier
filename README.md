@@ -1,4 +1,5 @@
 [![CircleCI](https://circleci.com/gh/Willumz/ps-minifier.svg?style=shield)](https://circleci.com/gh/Willumz/ps-minifier)
+[![codecov](https://codecov.io/gh/Willumz/ps-minifier/branch/master/graph/badge.svg)](https://codecov.io/gh/Willumz/ps-minifier)
 
 # ps-minifier
 A very basic minifier for PowerShell scripts.
