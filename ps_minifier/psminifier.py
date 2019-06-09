@@ -1,9 +1,9 @@
 import sys
+import re
+from itertools import product
+import argparse
 def main(args=sys.argv, file=None):
-    global variables, variable, var_count
-    import re
-    from itertools import product
-    import argparse
+    global variables, variable, var_count, chars
 
     if file != None: return_result = True
     else: return_result = False
@@ -27,25 +27,7 @@ def main(args=sys.argv, file=None):
     variable = "a"
     var_count = 0
     variables = [""]
-    def genVars():
-        global variables
-        length = len(variables[0])
-        variables = []
-        for i in product(*(["".join(chars)]*(length+1))):
-            if not i[0].isnumeric(): variables.append("".join(i))
-    genVars()
-    def getVar():
-        global variable, var_count
-        var = variable
-        if variables.index(variable) == len(variables)-1:
-            genVars()
-            var_count = 0
-            variable = variables[var_count]
-        else:
-            var_count += 1
-            variable = variables[var_count]
-        return var
-            
+    genVars()        
 
     strings = re.findall('".*"', file)
     str_locs = {}
@@ -99,6 +81,24 @@ def main(args=sys.argv, file=None):
             print("==RESULT==\n"+file)
     else:
         return file
+
+def genVars():
+    global variables
+    length = len(variables[0])
+    variables = []
+    for i in product(*(["".join(chars)]*(length+1))):
+        if not i[0].isnumeric(): variables.append("".join(i))
+def getVar():
+    global variable, var_count
+    var = variable
+    if variables.index(variable) == len(variables)-1:
+        genVars()
+        var_count = 0
+        variable = variables[var_count]
+    else:
+        var_count += 1
+        variable = variables[var_count]
+    return var
 
 if __name__ == "__main__":
     main()
