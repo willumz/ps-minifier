@@ -1,4 +1,5 @@
-def main():
+import sys
+def main(args=sys.argv, file=None):
     global variables, variable, var_count
     import re
     from itertools import product
@@ -10,12 +11,13 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--file", type=str, help="path to file to minify")
     parser.add_argument("-o", "--out-file", type=str, help="path to save the result")
-    args = parser.parse_args()
-    if args.file != None:
-        with open(args.file, "r") as f:
-            file = f.read()
-    else:
-        file = input()
+    args = parser.parse_args(args[1:])
+    if file == None:
+        if args.file != None:
+            with open(args.file, "r") as f:
+                file = f.read()
+        else:
+            file = input()
 
 
     marker_count = 0
@@ -92,4 +94,5 @@ def main():
     else:
         print("==RESULT==\n"+file)
 
-main()
+if __name__ == "__main__":
+    main()
