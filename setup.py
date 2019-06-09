@@ -5,7 +5,7 @@ with open("README.md", "r") as f:
 
 setuptools.setup(
     name = "ps-minifier",
-    version = "0.1.0",
+    version = "0.1.1",
     author = "Willumz",
     description = "A minifier for PowerShell scripts.",
     long_description = longdesc,
