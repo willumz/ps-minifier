@@ -5,6 +5,9 @@ def main(args=sys.argv, file=None):
     from itertools import product
     import argparse
 
+    if file != None: return_result = True
+    else: return_result = False
+
     MARKER_PREFIX = "/\\./\\"
     chars = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0']
 
@@ -88,11 +91,14 @@ def main(args=sys.argv, file=None):
         file = file.replace(i, str_locs[i])
 
 
-    if args.out_file != None:
-        with open(args.out_file, "w") as f:
-            f.write(file)
+    if not return_result:
+        if args.out_file != None:
+            with open(args.out_file, "w") as f:
+                f.write(file)
+        else:
+            print("==RESULT==\n"+file)
     else:
-        print("==RESULT==\n"+file)
+        return file
 
 if __name__ == "__main__":
     main()
