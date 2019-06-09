@@ -1,5 +1,6 @@
 import unittest
 import os
+import subprocess as sp
 import ps_minifier.psminifier as psmin
 
 class TestMinifiedOutput(unittest.TestCase):
@@ -29,6 +30,12 @@ class TestMinifiedOutput(unittest.TestCase):
         psmin.var_count = 0
         self.assertEqual(psmin.variables[psmin.var_count], psmin.getVar())
         self.assertRegex(psmin.getVar(), "^[a-zA-Z][a-zA-Z0-9]*$")
+
+        # Test refresh variables
+        psmin.variable = psmin.variables[-1]
+        length = len(psmin.variable)
+        psmin.getVar()
+        self.assertEqual(len(psmin.variable), length+1)
     
     def test_variable_replacement(self):
         self.assertRegex(psmin.main(["psminifier.py"], file='$a = "hello there!";\n$b = "hi";\n$a="hey";'), '^(\$[a-zA-Z][a-zA-Z0-9]*)="hello there!";(\$[a-zA-Z][a-zA-Z0-9]*)="hi";\\1="hey";$')
@@ -39,6 +46,22 @@ class TestMinifiedOutput(unittest.TestCase):
 
     def test_string_integrity(self):
         self.assertRegex(psmin.main(["psminifier.py"], file='$a = "hello there!"'), '^\$[a-z]="hello there!"$')
+
+    def test_input_output(self):
+        # Test stdin and stdout
+        proc = sp.Popen("psminifier", stdout=sp.PIPE, stdin=sp.PIPE)
+        resp = (proc.communicate(input="$a = 2".encode()))[0].decode()
+        self.assertRegex(resp, "^==RESULT==[\r\n]+\$[a-z]=2[\r\n]*$")
+
+        # Test file input and file output
+        with open("test_ps.txt", "w") as f:
+            f.write("$a = 1;\n$a = $a * 2;")
+        proc = sp.Popen(["psminifier", "-f", "test_ps.txt", "-o", "test_ps_out.txt"], stdout=sp.PIPE)
+        proc.stdout.read()
+        with open("test_ps_out.txt", "r") as f:
+            self.assertRegex(f.read(), "^(\$[a-z])=1;\\1=\\1\*2;[\r\n]*$")
+        os.remove("test_ps_out.txt")
+        os.remove("test_ps.txt")
 
 
 if __name__ == '__main__':
