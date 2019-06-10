@@ -5,13 +5,16 @@ import argparse
 
 VAR_REGEX = "\$(?:[_a-zA-Z0-9]{2,}|[a-zA-Z0-9]+)"
 
+MARKER_PREFIX = "/\\./\\"
+
+AUTO_VARS = ["$true","$false","$$","$?","$^","$_","$args","$consolefilename","$error","$event","$eventargs","$eventsubscriber","$executioncontext","$foreach","$home","$host","$input","$iscoreclr","$islinux","$ismacos","$iswindows","$lastexitcode","$matches","$myinvocation","$nestedpromptlevel","$null","$pid","$profile","$psboundparametervalues","$pscmdlet","$pscommandpath","$psculture","$psdebugcontext","$pshome","$psitem","$psscriptroot","$pssenderinfo","$psuiculture","$psversiontable","$pwd","$sender","$shellid","$stacktrace","$switch","$this"]
+
 def main(args=sys.argv, file=None):
     global variables, variable, var_count, chars
 
     if file != None: return_result = True
     else: return_result = False
 
-    MARKER_PREFIX = "/\\./\\"
     chars = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0']
 
     parser = argparse.ArgumentParser()
@@ -25,19 +28,12 @@ def main(args=sys.argv, file=None):
         else:
             file = input()
 
-
-    marker_count = 0
     variable = "a"
     var_count = 0
     variables = [""]
     genVars()        
 
-    strings = re.findall('".*"', file)
-    str_locs = {}
-    for i in strings:
-        file = file.replace(i, MARKER_PREFIX.replace(".", str(marker_count)))
-        str_locs[MARKER_PREFIX.replace(".", str(marker_count))] = i
-        marker_count += 1
+    str_locs, file = removeStrings(file)
 
 
     file = file.replace("\t", "    ")
@@ -59,7 +55,7 @@ def main(args=sys.argv, file=None):
     done_vars = []
     found_vars = re.findall(VAR_REGEX, file)
     for i in found_vars:
-        if i not in done_vars and i.lower() not in ["$true","$false","$$","$?","$^","$_","$args","$consolefilename","$error","$event","$eventargs","$eventsubscriber","$executioncontext","$foreach","$home","$host","$input","$iscoreclr","$islinux","$ismacos","$iswindows","$lastexitcode","$matches","$myinvocation","$nestedpromptlevel","$null","$pid","$profile","$psboundparametervalues","$pscmdlet","$pscommandpath","$psculture","$psdebugcontext","$pshome","$psitem","$psscriptroot","$pssenderinfo","$psuiculture","$psversiontable","$pwd","$sender","$shellid","$stacktrace","$switch","$this"]:
+        if i not in done_vars and i.lower() not in AUTO_VARS:
             new = "${}".format(getVar())
             file = re.sub(re.escape(i)+"(?![_a-zA-Z0-9])", new, file)
             done_vars.append(new)
@@ -82,7 +78,7 @@ def genVars():
     length = len(variables[0])
     variables = []
     for i in product(*(["".join(chars)]*(length+1))):
-        if not i[0].isnumeric(): variables.append("".join(i))
+        if "$"+i not in AUTO_VARS: variables.append("".join(i))
 def getVar():
     global variable, var_count
     var = variable
@@ -94,6 +90,18 @@ def getVar():
         var_count += 1
         variable = variables[var_count]
     return var
+
+def removeStrings(file):
+    # Returns a dictionary of markers and their strings
+    # Returns file, but with the markers instead of the strings
+    marker_count = 0
+    strings = re.findall('".*"', file)
+    str_locs = {}
+    for i in strings:
+        file = file.replace(i, MARKER_PREFIX.replace(".", str(marker_count)))
+        str_locs[MARKER_PREFIX.replace(".", str(marker_count))] = i
+        marker_count += 1
+    return str_locs, file
 
 if __name__ == "__main__":
     main()
