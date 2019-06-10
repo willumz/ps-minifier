@@ -56,7 +56,7 @@ def main(args=sys.argv, file=None):
     done_vars = []
     found_vars = re.findall("\$[a-zA-Z][a-zA-Z0-9]*", file)
     for i in found_vars:
-        if i not in done_vars:
+        if i not in done_vars and i not in ["$true","$false"]:
             new = "${}".format(getVar())
             file = file.replace(i, new)
             done_vars.append(new)
