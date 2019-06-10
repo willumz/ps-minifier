@@ -15,21 +15,21 @@ class TestMinifiedOutput(unittest.TestCase):
         psmin.variables[0] = ""
         psmin.genVars()
         for i in psmin.variables:
-            self.assertRegex(i, '^[a-zA-Z]$')
+            self.assertRegex(i, '^(?:[_a-zA-Z0-9]|[a-zA-Z0-9])$')
         self.assertEqual(len(psmin.variables), len(set(psmin.variables)))
         
         # Test 2 chars
         psmin.variables[0] = "a"
         psmin.genVars()
         for i in psmin.variables:
-            self.assertRegex(i, '^[a-zA-Z][a-zA-Z0-9]$')
+            self.assertRegex(i, '^(?:[_a-zA-Z0-9]{2}|[a-zA-Z0-9]{2})$')
         self.assertEqual(len(psmin.variables), len(set(psmin.variables)))
     
     def test_getVar(self):
         psmin.variable = psmin.variables[0]
         psmin.var_count = 0
         self.assertEqual(psmin.variables[psmin.var_count], psmin.getVar())
-        self.assertRegex(psmin.getVar(), "^[a-zA-Z][a-zA-Z0-9]*$")
+        self.assertRegex(psmin.getVar(), "^{VR}$".format(VR=psmin.VAR_REGEX[2:]))
 
         # Test refresh variables
         psmin.variable = psmin.variables[-1]
@@ -38,10 +38,10 @@ class TestMinifiedOutput(unittest.TestCase):
         self.assertEqual(len(psmin.variable), length+1)
     
     def test_variable_replacement(self):
-        self.assertRegex(psmin.main(["psminifier.py"], file='$a = "hello there!";\n$b = "hi";\n$a="hey";'), '^(\$[a-zA-Z][a-zA-Z0-9]*)="hello there!";(\$[a-zA-Z][a-zA-Z0-9]*)="hi";\\1="hey";$')
-        self.assertRegex(psmin.main(["psminifier.py"], file='$a1 = "hello there!";\n$b = "hi";\n$a1="hey";'), '^(\$[a-zA-Z][a-zA-Z0-9]*)="hello there!";(\$[a-zA-Z][a-zA-Z0-9]*)="hi";\\1="hey";$')
-        self.assertRegex(psmin.main(["psminifier.py"], file='$a1A = "hello there!";\n$b = "hi";\n$a1A="hey";'), '^(\$[a-zA-Z][a-zA-Z0-9]*)="hello there!";(\$[a-zA-Z][a-zA-Z0-9]*)="hi";\\1="hey";$')
-        self.assertNotRegex(psmin.main(["psminifier.py"], file='$1a = "hello there!";\n$b2 = "hi";\n$1a="hey";'), '^(\$[a-zA-Z][a-zA-Z0-9]*)="hello there!";(\$[a-zA-Z][a-zA-Z0-9]*)="hi";\\1="hey";$')
+        self.assertRegex(psmin.main(["psminifier.py"], file='$a = "hello there!";\n$b = "hi";\n$a="hey";'), '^({VR})="hello there!";({VR})="hi";\\1="hey";$'.format(VR=psmin.VAR_REGEX))
+        self.assertRegex(psmin.main(["psminifier.py"], file='$a1 = "hello there!";\n$b = "hi";\n$a1="hey";'), '^({VR})="hello there!";({VR})="hi";\\1="hey";$'.format(VR=psmin.VAR_REGEX))
+        self.assertRegex(psmin.main(["psminifier.py"], file='$a1A = "hello there!";\n$b = "hi";\n$a1A="hey";'), '^({VR})="hello there!";({VR})="hi";\\1="hey";$'.format(VR=psmin.VAR_REGEX))
+        self.assertRegex(psmin.main(["psminifier.py"], file='$1a = "hello there!";\n$b2 = "hi";\n$1a="hey";'), '^({VR})="hello there!";({VR})="hi";\\1="hey";$'.format(VR=psmin.VAR_REGEX))
         self.assertRegex(psmin.main(["psminifier.py"], file='$a1A = "hello there!";\n$b = "hi";\n$a1A="hey";'), '^(\$[a-zA-Z])="hello there!";(\$[a-zA-Z])="hi";\\1="hey";$',msg="The variable should be of length 1.")
         self.assertEqual(psmin.main(["psminifier.py"], file="$true"), "$true")
         self.assertEqual(psmin.main(["psminifier.py"], file="$false"), "$false")

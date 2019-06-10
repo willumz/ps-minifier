@@ -2,6 +2,9 @@ import sys
 import re
 from itertools import product
 import argparse
+
+VAR_REGEX = "\$(?:[_a-zA-Z0-9]{2,}|[a-zA-Z0-9]+)"
+
 def main(args=sys.argv, file=None):
     global variables, variable, var_count, chars
 
@@ -44,19 +47,19 @@ def main(args=sys.argv, file=None):
     file = re.sub(" *\) *", ")", file)
     file = re.sub(" *{ *", "{", file)
     file = re.sub(" *} *", "}", file)
-    file = re.sub("(\$[a-zA-Z][a-zA-Z0-9]*|[0-9])( *|)\+( *|)(\$[a-zA-Z][a-zA-Z0-9]*|[0-9])", "\\1+\\4", file)
-    file = re.sub("(\$[a-zA-Z][a-zA-Z0-9]*|[0-9])( *|)\-( *|)(\$[a-zA-Z][a-zA-Z0-9]*|[0-9])", "\\1-\\4", file)
-    file = re.sub("(\$[a-zA-Z][a-zA-Z0-9]*|[0-9])( *|)/( *|)(\$[a-zA-Z][a-zA-Z0-9]*|[0-9])", "\\1/\\4", file)
-    file = re.sub("(\$[a-zA-Z][a-zA-Z0-9]*|[0-9])( *|)\*( *|)(\$[a-zA-Z][a-zA-Z0-9]*|[0-9])", "\\1*\\4", file)
+    file = re.sub("({VR}|[0-9])( *|)\+( *|)({VR}|[0-9])".format(VR=VAR_REGEX), "\\1+\\4", file)
+    file = re.sub("({VR}|[0-9])( *|)\-( *|)({VR}|[0-9])".format(VR=VAR_REGEX), "\\1-\\4", file)
+    file = re.sub("({VR}|[0-9])( *|)/( *|)({VR}|[0-9])".format(VR=VAR_REGEX), "\\1/\\4", file)
+    file = re.sub("({VR}|[0-9])( *|)\*( *|)({VR}|[0-9])".format(VR=VAR_REGEX), "\\1*\\4", file)
     file = re.sub("#.*$", "", file)
     file = re.sub("#.*\n", "\n", file)
     file = re.sub("\n *", "", file)
 
 
     done_vars = []
-    found_vars = re.findall("\$[a-zA-Z][a-zA-Z0-9]*", file)
+    found_vars = re.findall(VAR_REGEX, file)
     for i in found_vars:
-        if i not in done_vars and i not in ["$true","$false"]:
+        if i not in done_vars and i.lower() not in ["$true","$false","$$","$?","$^","$_","$args","$consolefilename","$error","$event","$eventargs","$eventsubscriber","$executioncontext","$foreach","$home","$host","$input","$iscoreclr","$islinux","$ismacos","$iswindows","$lastexitcode","$matches","$myinvocation","$nestedpromptlevel","$null","$pid","$profile","$psboundparametervalues","$pscmdlet","$pscommandpath","$psculture","$psdebugcontext","$pshome","$psitem","$psscriptroot","$pssenderinfo","$psuiculture","$psversiontable","$pwd","$sender","$shellid","$stacktrace","$switch","$this"]:
             new = "${}".format(getVar())
             file = file.replace(i, new)
             done_vars.append(new)
