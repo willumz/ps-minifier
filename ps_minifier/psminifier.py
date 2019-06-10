@@ -61,7 +61,7 @@ def main(args=sys.argv, file=None):
     for i in found_vars:
         if i not in done_vars and i.lower() not in ["$true","$false","$$","$?","$^","$_","$args","$consolefilename","$error","$event","$eventargs","$eventsubscriber","$executioncontext","$foreach","$home","$host","$input","$iscoreclr","$islinux","$ismacos","$iswindows","$lastexitcode","$matches","$myinvocation","$nestedpromptlevel","$null","$pid","$profile","$psboundparametervalues","$pscmdlet","$pscommandpath","$psculture","$psdebugcontext","$pshome","$psitem","$psscriptroot","$pssenderinfo","$psuiculture","$psversiontable","$pwd","$sender","$shellid","$stacktrace","$switch","$this"]:
             new = "${}".format(getVar())
-            file = file.replace(i, new)
+            file = re.sub(re.escape(i)+"(?![_a-zA-Z0-9])", new, file)
             done_vars.append(new)
 
     for i in str_locs:
