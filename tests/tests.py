@@ -45,6 +45,8 @@ class TestMinifiedOutput(unittest.TestCase):
         self.assertRegex(psmin.main(["psminifier.py"], file='$a1A = "hello there!";\n$b = "hi";\n$a1A="hey";'), '^(\$[a-zA-Z])="hello there!";(\$[a-zA-Z])="hi";\\1="hey";$',msg="The variable should be of length 1.")
         self.assertEqual(psmin.main(["psminifier.py"], file="$true"), "$true")
         self.assertEqual(psmin.main(["psminifier.py"], file="$false"), "$false")
+        self.assertRegex(psmin.main(["psminifier.py"], file='$a12 = "y";\n$b3 = "x $a12 z";'), '^({VR})="y";({VR})="x \\1 z";$'.format(VR=psmin.VAR_REGEX))
+        self.assertRegex(psmin.main(["psminifier.py"], file='$a12 = "y";\n$b3 = "x `$a12 z";'), '^({VR})="y";({VR})="x `\$a12 z";$'.format(VR=psmin.VAR_REGEX))
 
 
     def test_string_integrity(self):

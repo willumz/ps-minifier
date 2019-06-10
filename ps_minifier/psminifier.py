@@ -54,10 +54,14 @@ def main(args=sys.argv, file=None):
 
     done_vars = []
     found_vars = re.findall(VAR_REGEX, file)
+    for i in str_locs:
+        found_vars += [ii[1:] for ii in re.findall("[^`]"+VAR_REGEX, str_locs[i])]
     for i in found_vars:
         if i not in done_vars and i.lower() not in AUTO_VARS:
             new = "${}".format(getVar())
             file = re.sub(re.escape(i)+"(?![_a-zA-Z0-9])", new, file)
+            for ii in str_locs:
+                str_locs[ii] = re.sub("([^`])"+re.escape(i)+"(?![_a-zA-Z0-9])", "\\1"+new, str_locs[ii])
             done_vars.append(new)
 
     for i in str_locs:
@@ -78,7 +82,7 @@ def genVars():
     length = len(variables[0])
     variables = []
     for i in product(*(["".join(chars)]*(length+1))):
-        if "$"+i not in AUTO_VARS: variables.append("".join(i))
+        if "$"+"".join(i) not in AUTO_VARS: variables.append("".join(i))
 def getVar():
     global variable, var_count
     var = variable
