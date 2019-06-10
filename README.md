@@ -10,11 +10,13 @@ Currently, a semicolon (`;`) is required at the end of each line in the script i
 NOTE: This minifier is currently not very complex, and (while it works with programs I have tested it on) may not output functioning code for all programs it is given.
 
 ## Installation
-`pip install ps-minifier`
+```$ pip install ps-minifier```
 
 ## Usage
-Help:
-`psminifier -h`
+To display the help menu:
+
+```$ psminifier -h```
+
 
 ```
 usage: psminifier [-h] [-f FILE] [-o OUT_FILE]
@@ -26,9 +28,13 @@ optional arguments:
                         path to save the result
 ```
 
-Pass the path to the file: `psminifier -f FILE_PATH`
+Pass the path to the file:
 
-Pass the path to save the result to: `psminifier -o OUTPUT_PATH`
+```$ psminifier -f FILE_PATH```
+
+Pass the path to save the result to:
+
+```$ psminifier -o OUTPUT_PATH```
 
 If `psminifier` is run without `-f` it will prompt the user to enter code via the standard input.
 If it is run without `-o` it will output the result to the standard output.

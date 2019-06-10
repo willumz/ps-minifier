@@ -37,15 +37,13 @@ def main(args=sys.argv, file=None):
         marker_count += 1
 
 
-    file.replace("\t", "    ")
+    file = file.replace("\t", "    ")
     file = re.sub("( *|)=( *|)", "=", file)
     file = re.sub("( *|),( *|)", ",", file)
-    file = re.sub("\( *", "(", file)
-    file = re.sub(" *\(", "(", file)
-    file = re.sub(" *\)", ")", file)
-    file = re.sub("{ *", "{", file)
-    file = re.sub(" *{", "{", file)
-    file = re.sub(" *}", "}", file)
+    file = re.sub(" *\( *", "(", file)
+    file = re.sub(" *\) *", ")", file)
+    file = re.sub(" *{ *", "{", file)
+    file = re.sub(" *} *", "}", file)
     file = re.sub("(\$[a-zA-Z][a-zA-Z0-9]*|[0-9])( *|)\+( *|)(\$[a-zA-Z][a-zA-Z0-9]*|[0-9])", "\\1+\\4", file)
     file = re.sub("(\$[a-zA-Z][a-zA-Z0-9]*|[0-9])( *|)\-( *|)(\$[a-zA-Z][a-zA-Z0-9]*|[0-9])", "\\1-\\4", file)
     file = re.sub("(\$[a-zA-Z][a-zA-Z0-9]*|[0-9])( *|)/( *|)(\$[a-zA-Z][a-zA-Z0-9]*|[0-9])", "\\1/\\4", file)

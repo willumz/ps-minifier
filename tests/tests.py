@@ -65,6 +65,8 @@ class TestMinifiedOutput(unittest.TestCase):
     def test_maths_symbols(self):
         self.assertEqual(psmin.main(["psminifier.py"], file="Get-Command *-Service;"), "Get-Command *-Service;")
 
+    def test_brackets_whitespace_removal(self):
+        self.assertEqual(psmin.main(["psminifier.py"], file='If ( 1 -eq 1 ) {\n\tWrite-Output "Test"\n}'), 'If(1 -eq 1){Write-Output "Test"}')
 
 if __name__ == '__main__':
     unittest.main()
