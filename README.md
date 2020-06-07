@@ -38,3 +38,12 @@ Pass the path to save the result to:
 
 If `psminifier` is run without `-f` it will prompt the user to enter code via the standard input.
 If it is run without `-o` it will output the result to the standard output.
+
+The psminifier module can be imported from python script as follows.
+```python
+from psminifier import minify
+
+script = "[Some Powershell Scripts]"
+minified_script = minify(script)
+print(minified_script)
+```
