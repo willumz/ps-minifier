@@ -41,7 +41,7 @@ If it is run without `-o` it will output the result to the standard output.
 
 The psminifier module can be imported from python script as follows.
 ```python
-from psminifier import minify
+from ps_minifier.psminifier import minify
 
 script = "[Some Powershell Scripts]"
 minified_script = minify(script)
