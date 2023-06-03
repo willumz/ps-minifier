@@ -24,7 +24,7 @@ def minify(content):
     # assignment by ... operators
     assignment_operators = ["+=", "-=", "*=", "/=", "%=", "??="]
     for assignment_operator in assignment_operators:
-        content = re.sub(f"( *|){assignment_operator}( *|)", assignment_operator, content)
+        content = re.sub(f"( *|)({re.escape(assignment_operator)})( *|)", assignment_operator, content)
     content = re.sub("( *|)=( *|)", "=", content)
     content = re.sub("( *|),( *|)", ",", content)
     content = re.sub(" *\( *", "(", content)
