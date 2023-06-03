@@ -21,6 +21,10 @@ def minify(content):
     str_locs, content = removeStrings(content)
 
     content = content.replace("\t", "    ")
+    # assignment by ... operators
+    assignment_operators = ["+=", "-=", "*=", "/=", "%=", "??="]
+    for assignment_operator in assignment_operators:
+        content = re.sub(f"( *|)({re.escape(assignment_operator)})( *|)", assignment_operator, content)
     content = re.sub("( *|)=( *|)", "=", content)
     content = re.sub("( *|),( *|)", ",", content)
     content = re.sub(" *\( *", "(", content)

@@ -10,6 +10,15 @@ class TestMinifiedOutput(unittest.TestCase):
         self.assertRegex(psmin.main(["psminifier.py"], file='$a   = "b"'), '^\$[a-z]="b"$')
         self.assertRegex(psmin.main(["psminifier.py"], file='$a =    "b"'), '^\$[a-z]="b"$')
     
+    def test_assignment_operators(self):
+        self.assertRegex(psmin.main(["psminifier.py"], file='$a += "b"'), '^\$[a-z]+="b"$')
+        self.assertRegex(psmin.main(["psminifier.py"], file='$a   -= "b"'), '^\$[a-z]-="b"$')
+        self.assertRegex(psmin.main(["psminifier.py"], file='$a *=    "b"'), '^\$[a-z]*="b"$')
+        self.assertRegex(psmin.main(["psminifier.py"], file='$a /= "b"'), '^\$[a-z]/="b"$')
+        self.assertRegex(psmin.main(["psminifier.py"], file='$a   %= "b"'), '^\$[a-z]%="b"$')
+        self.assertRegex(psmin.main(["psminifier.py"], file='$a ??=    "b"'), '^\$[a-z]??="b"$')
+
+    
     def test_genVars(self):
         # Test 1 char
         psmin.variables[0] = ""
